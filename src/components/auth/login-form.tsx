@@ -24,8 +24,10 @@ export function LoginForm({
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [verificationCode, setVerificationCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showTwoFactor, setShowTwoFactor] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,13 +35,38 @@ export function LoginForm({
     setIsLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
+      if (showTwoFactor) {
+        const { error: verifyError } = await authClient.twoFactor.verifyOtp({
+          code: verificationCode,
+        });
+
+        if (verifyError) {
+          setError(verifyError.message || "Failed to verify OTP");
+          return;
+        }
+
+        router.push("/");
+        return;
+      }
+
+      const response = await authClient.signIn.email({
         email,
         password,
       });
 
-      if (error) {
-        setError(error.message || "Failed to login");
+      if (response.error) {
+        setError(response.error.message || "Failed to login");
+        return;
+      }
+
+      // @ts-expect-error - Package not typed
+      if (response.data?.twoFactorRedirect) {
+        setShowTwoFactor(true);
+        const { error } = await authClient.twoFactor.sendOtp();
+
+        if (error) {
+          setError(error.message || "Failed to send OTP");
+        }
       } else {
         router.push("/");
       }
@@ -93,6 +120,23 @@ export function LoginForm({
                   disabled={isLoading}
                 />
               </div>
+              {showTwoFactor && (
+                <div className="grid gap-2">
+                  <Label htmlFor="otp">Verification Code</Label>
+                  <Input
+                    id="otp"
+                    type="text"
+                    placeholder="Enter your 6-digit code"
+                    value={verificationCode}
+                    onChange={(e) => setVerificationCode(e.target.value)}
+                    disabled={isLoading}
+                    maxLength={6}
+                    pattern="[0-9]*"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                  />
+                </div>
+              )}
               {error && (
                 <div className="rounded-md bg-destructive/10 p-3 text-center text-sm font-medium text-destructive">
                   {error}
@@ -100,7 +144,7 @@ export function LoginForm({
               )}
               <Button type="submit" className="w-full" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Login
+                {showTwoFactor ? "Verify OTP" : "Login"}
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
