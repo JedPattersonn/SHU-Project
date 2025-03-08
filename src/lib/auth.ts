@@ -23,5 +23,8 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({user, url, token}, request) => {
+      console.log("Reset Password Link", url)
+    }
   },
 });
