@@ -19,7 +19,7 @@ import Link from "next/link";
 const data = {
   items: [
     {
-      name: "Dashobard",
+      name: "Dashboard",
       url: "/",
       icon: PieChart,
     },
