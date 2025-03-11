@@ -3,7 +3,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { ClientLayout } from "./client-layout";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-
+import { redirect } from "next/navigation";
 export default async function AuthenticatedLayout({
   children,
 }: {
@@ -14,7 +14,7 @@ export default async function AuthenticatedLayout({
   });
 
   if (!session) {
-    return;
+    return redirect("/login");
   }
 
   return (
