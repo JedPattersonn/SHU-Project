@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, CloudLightning, Map, PieChart } from "lucide-react";
+import { BookOpen, PlugZap, Map, PieChart } from "lucide-react";
 import { NavOptions } from "./nav-options";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -50,7 +50,7 @@ export function AppSidebar({
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <CloudLightning className="size-4" />
+                  <PlugZap className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
