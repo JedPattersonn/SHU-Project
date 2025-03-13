@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 import { EnergyChart } from "@/components/dashboard/chart";
 
 export const metadata: Metadata = {
-  title: "Dashboard"
+  title: "Dashboard | Energy Dashboard"
 }
 
 export default async function Home() {

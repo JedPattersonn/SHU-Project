@@ -1,0 +1,1 @@
+ALTER TABLE `energy_data` ADD `year` int NOT NULL;

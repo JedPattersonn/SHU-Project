@@ -28,11 +28,17 @@ const data = {
       url: "/history",
       icon: BookOpen,
     },
+    // {
+    //   name: "Zip Code Search",
+    //   url: "/zip-code-search",
+    //   icon: Map,
+    // },
     {
-      name: "Zip Code Search",
-      url: "/zip-code-search",
+      name: "Heatmap",
+      url: "/map",
       icon: Map,
-    },
+    }
+
   ],
 };
 
