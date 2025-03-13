@@ -6,7 +6,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
-  title: "Dashboard"
+  title: "Dashboard | Energy Dashboard"
 }
 
 export default async function Home() {
