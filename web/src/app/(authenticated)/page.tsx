@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { EnergyChart } from "@/components/dashboard/chart";
 
 export const metadata: Metadata = {
   title: "Dashboard"
@@ -27,6 +28,7 @@ export default async function Home() {
       <StatCard title="Total Active Connections" value={100} />
     </div>
     <AnomalyAlertCard />
+    <EnergyChart />
     </div>
   );
 }
