@@ -2,29 +2,33 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 
-const createUserSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
-  name: z.string().min(1),
-  role: z.enum(["admin", "user"]),
-});
+// const createUserSchema = z.object({
+//   email: z.string().email(),
+//   password: z.string().min(8),
+//   name: z.string().min(1),
+//   role: z.enum(["admin", "user"]),
+// });
 
-export async function POST(request: Request) {
-  const { email, password, name, role } = await request.json();
+export async function GET(request: Request) {
+  
+  const email = "admin@gmail.com"
+  const password = "password"
+  const name = "John Doe Admin"
+  const role = "admin"
 
-  const parsed = createUserSchema.safeParse({ email, password, name, role });
-
-  if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.message }, { status: 400 });
-  }
   try {
     const user = await auth.api.signUpEmail({
-      body: parsed.data,
+      body: {
+        email,
+        password,
+        name,
+        role,
+      },
     });
 
     await auth.api.enableTwoFactor({
       body: {
-        password: parsed.data.password,
+        password: password,
       },
       headers: {
         Authorization: `Bearer ${user.token}`,
