@@ -3,6 +3,7 @@ import {
   varchar,
   text,
   timestamp,
+  float,
   boolean,
 } from "drizzle-orm/mysql-core";
 
@@ -69,4 +70,43 @@ export const twoFactor = mysqlTable("two_factor", {
   userId: varchar("user_id", { length: 36 })
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+});
+
+// ----
+
+export const city = mysqlTable("city", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
+
+export const networkManager = mysqlTable("network_manager", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at").notNull(),
+  updatedAt: timestamp("updated_at").notNull(),
+});
+
+export const energyData = mysqlTable("energy_data", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  cityId: varchar("city_id", { length: 36 })
+    .notNull()
+    .references(() => city.id, { onDelete: "cascade" }),
+  networkManagerId: varchar("network_manager_id", { length: 36 })
+    .notNull()
+    .references(() => networkManager.id, { onDelete: "cascade" }),
+  purchaseArea: text("purchase_area").notNull(),
+  street: text("street").notNull(),
+  zipCodeFrom: varchar("zip_code_from", { length: 6 }).notNull(),
+  zipCodeTo: varchar("zip_code_to", { length: 6 }).notNull(),
+  numConnections: float("num_connections").notNull(),
+  deliveryPerc: float("delivery_perc").notNull(),
+  percOfActiveConnections: float("perc_of_active_connections").notNull(),
+  typeOfConnection: text("type_of_connection").notNull(),
+  typeConnPerc: float("type_conn_perc").notNull(),
+  annualConsume: float("annual_consume").notNull(),
+  annualConsumeLowTarifPerc: float("annual_consume_lowtarif_perc").notNull(),
+  smartmeterPerc: float("smartmeter_perc").notNull(),
+  type: text("type", { enum: ["gas", "electricity"] }).notNull(),
 });
