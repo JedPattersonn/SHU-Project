@@ -4,22 +4,27 @@ import { Bar, BarChart } from "recharts"
 
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
 
+import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+
+<ChartLegend content={<ChartLegendContent nameKey="EnergyType" />} />
+
+
 const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
+  { EnergyType: "January", Electricity: 186, Gas: 80 },
+  { EnergyType: "February", Electricity: 305, Gas: 200 },
+  { EnergyType: "March", Electricity: 237, Gas: 120 },
+  { EnergyType: "April", Electricity: 73, Gas: 190 },
+  { EnergyType: "May", Electricity: 209, Gas: 130 },
+  { EnergyType: "June", Electricity: 214, Gas: 140 },
 ]
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  electricity: {
+    label: "Electricity",
     color: "#2563eb",
   },
-  mobile: {
-    label: "Mobile",
+  gas: {
+    label: "Gas",
     color: "#60a5fa",
   },
 } satisfies ChartConfig
@@ -28,8 +33,8 @@ export function EnergyChart() {
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <BarChart accessibilityLayer data={chartData}>
-        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+        <Bar dataKey="Electricity" fill="var(--color-electricity)" radius={4} />
+        <Bar dataKey="Gas" fill="var(--color-gas)" radius={4} />
       </BarChart>
     </ChartContainer>
   )
