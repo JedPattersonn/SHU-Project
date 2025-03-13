@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
-import { z } from "zod";
 import { auth } from "@/lib/auth";
 
-// const createUserSchema = z.object({
-//   email: z.string().email(),
-//   password: z.string().min(8),
-//   name: z.string().min(1),
-//   role: z.enum(["admin", "user"]),
-// });
-
-export async function GET(request: Request) {
+export async function GET() {
   
   const email = "admin@gmail.com"
   const password = "password"

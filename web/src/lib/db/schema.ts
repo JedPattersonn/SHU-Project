@@ -5,6 +5,7 @@ import {
   timestamp,
   float,
   boolean,
+  int
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {
@@ -72,8 +73,6 @@ export const twoFactor = mysqlTable("two_factor", {
     .references(() => user.id, { onDelete: "cascade" }),
 });
 
-// ----
-
 export const city = mysqlTable("city", {
   id: varchar("id", { length: 36 }).primaryKey(),
   name: text("name").notNull(),
@@ -109,4 +108,5 @@ export const energyData = mysqlTable("energy_data", {
   annualConsumeLowTarifPerc: float("annual_consume_lowtarif_perc").notNull(),
   smartmeterPerc: float("smartmeter_perc").notNull(),
   type: text("type", { enum: ["gas", "electricity"] }).notNull(),
+  year: int("year").notNull(),
 });
