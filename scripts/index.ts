@@ -36,7 +36,6 @@ async function validateAndInsertData(rows: CsvRow[], year: number) {
       cityMap.set(row.city, cityId);
     }
 
-    // Insert network manager if not exists
     if (!networkManagerMap.has(row.net_manager)) {
       const networkManagerId = uuidv4();
       await db.insert(networkManager).values({

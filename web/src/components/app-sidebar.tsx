@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { BookOpen, PlugZap, Map, PieChart } from "lucide-react";
+import { BookOpen, PlugZap, Map, PieChart, Users, Database } from "lucide-react";
 import { NavOptions } from "./nav-options";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -13,11 +13,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { User } from "better-auth";
 import Link from "next/link";
+import { user as User } from "@/lib/db/schema";
 
-const data = {
-  items: [
+const getMenuItems = (user: typeof User.$inferSelect) => {
+  const baseItems = [
     {
       name: "Dashboard",
       url: "/",
@@ -38,15 +38,35 @@ const data = {
       url: "/map",
       icon: Map,
     }
-  ],
+  ];
+
+  // Add admin-specific items if user has admin role
+  if (user.role === "admin") {
+    return [
+      {
+        name: "Users",
+        url: "/users",
+        icon: Users,
+      },
+      {
+        name: "Data",
+        url: "/data",
+        icon: Database,
+      }
+    ];
+  }
+
+  return baseItems;
 };
 
 export function AppSidebar({
   user,
   ...props
 }: React.ComponentProps<typeof Sidebar> & {
-  user: User;
+  user: typeof User.$inferSelect;
 }) {
+  const menuItems = getMenuItems(user);
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -69,7 +89,7 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavOptions projects={data.items} />
+        <NavOptions projects={menuItems} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

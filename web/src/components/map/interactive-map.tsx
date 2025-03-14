@@ -4,6 +4,8 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet/dist/leaflet.css';
+import { EnergyDataWithCoordinates } from '@/lib/utils/postal-code';
+import { useRouter } from 'next/navigation';
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
@@ -37,85 +39,105 @@ const HeatmapLayer = ({ points }: { points: number[][] }) => {
   return null;
 };
 
-const InteractiveHeatMap = () => {
-  const center = [51.505, -0.09]; 
+interface InteractiveHeatMapProps {
+  energyData: EnergyDataWithCoordinates[];
+}
+
+const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({ energyData }) => {
+  const router = useRouter();
+  const center = energyData[0]?.coordinates || [52.3567, 6.6626];
   const zoom = 13;
 
-  const heatPoints = [
-    [51.5, -0.09, 0.8],
-    [51.51, -0.08, 0.6],
-    [51.49, -0.1, 0.9],
-    [51.505, -0.085, 0.7],
-    [51.495, -0.095, 0.5],
-  ];
+  const heatPoints = energyData.map(item => [
+    item.coordinates[0],
+    item.coordinates[1],
+    item.annualConsume / 10000 
+  ]);
 
-  const markers = [
-    {
-      position: [51.505, -0.09],
-      popup: 'Central Point',
-    },
-    {
-      position: [51.51, -0.08],
-      popup: 'North East Point',
-    },
-    {
-      position: [51.49, -0.1],
-      popup: 'South West Point',
-    },
-  ];
-
-  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
+  const [showMarkers, setShowMarkers] = useState(true);
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <MapContainer 
-        // @ts-expect-error - center is an array of numbers
-        center={center} 
-        zoom={zoom} 
-        style={{ height: '100%', width: '100%' }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-        />
+    <div className="p-4 h-screen">
+      <div className="h-full w-full rounded-lg overflow-hidden shadow-lg relative">
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
+          <div className="flex items-center gap-2">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                className="sr-only peer"
+                checked={showMarkers}
+                onChange={(e) => setShowMarkers(e.target.checked)}
+              />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              <span className="ms-3 text-sm font-medium text-gray-700">Show Markers</span>
+            </label>
+          </div>
+        </div>
 
-        <HeatmapLayer points={heatPoints} />
+        <MapContainer 
+          center={center} 
+          zoom={zoom} 
+          className="h-full w-full"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          />
 
-        {markers.map((marker, index) => (
-          <Marker
-            key={index}
-            // @ts-expect-error - position is an array of numbers
-            position={marker.position}
-            eventHandlers={{
-              click: () => {
-                // @ts-expect-error - selectedMarker is a number
-                setSelectedMarker(index);
-              },
-            }}
-          >
-            <Popup>
-              {marker.popup}
-              <br />
-              Coordinates: {marker.position[0]}, {marker.position[1]}
-            </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          <HeatmapLayer points={heatPoints} />
 
-      <div
-        style={{
-          position: 'absolute',
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: 'white',
-          padding: '10px',
-          borderRadius: '5px',
-          boxShadow: '0 0 5px rgba(0,0,0,0.3)',
-        }}
-      >
-        <h3>Map Controls</h3>
-        <p>Selected Marker: {selectedMarker !== null ? markers[selectedMarker].popup : 'None'}</p>
+          {showMarkers && energyData.map((item, index) => (
+            <Marker
+              key={item.id}
+              position={item.coordinates}
+              eventHandlers={{
+                click: () => setSelectedMarker(index),
+              }}
+            >
+              <Popup>
+                <div className="min-w-[200px] font-sans">
+                  <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">{item.street}</h3>
+                  <div className="space-y-2">
+                    <div className="flex items-center text-sm">
+                      <span className="text-gray-600 font-medium w-1/2">Postal Code:</span>
+                      <span className="text-gray-800">{item.zipCodeFrom}</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <span className="text-gray-600 font-medium w-1/2">Consumption:</span>
+                      <span className="text-gray-800 font-medium">{item.annualConsume.toLocaleString()} kWh</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <span className="text-gray-600 font-medium w-1/2">Connections:</span>
+                      <span className="text-gray-800">{item.numConnections}</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <span className="text-gray-600 font-medium w-1/2">Type:</span>
+                      <span className="text-gray-800">{item.type.charAt(0).toUpperCase() + item.type.slice(1)}</span>
+                    </div>
+                    <div className="flex items-center text-sm">
+                      <span className="text-gray-600 font-medium w-1/2">Year:</span>
+                      <span className="text-gray-800">{item.year}</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-gray-200">
+                    <button
+                      onClick={() => {
+                        router.push(`/history/${item.zipCodeFrom}`);
+                      }}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                      View History
+                    </button>
+                  </div>
+                </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       </div>
     </div>
   );

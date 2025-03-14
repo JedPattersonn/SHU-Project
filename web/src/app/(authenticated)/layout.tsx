@@ -4,6 +4,9 @@ import { ClientLayout } from "./client-layout";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { db } from "@/lib/db";
+import { user as UserSchema } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export default async function AuthenticatedLayout({
   children,
@@ -18,9 +21,12 @@ export default async function AuthenticatedLayout({
     return redirect("/login");
   }
 
+  const user = await db.select().from(UserSchema).where(eq(UserSchema.id, session.user.id));
+
+
   return (
     <SidebarProvider>
-      <AppSidebar user={session.user} />
+      <AppSidebar user={user[0]} />
       <SidebarInset>
         <ClientLayout />
         <div className="flex-1 p-4 pt-0">{children}</div>
