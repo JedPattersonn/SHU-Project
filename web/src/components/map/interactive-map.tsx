@@ -1,14 +1,17 @@
-"use client"
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet.heat';
-import 'leaflet/dist/leaflet.css';
+"use client";
+import React, { useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet.heat";
+import "leaflet/dist/leaflet.css";
 
 L.Icon.Default.mergeOptions({
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
 const HeatmapLayer = ({ points }: { points: number[][] }) => {
@@ -22,11 +25,11 @@ const HeatmapLayer = ({ points }: { points: number[][] }) => {
       maxZoom: 17,
       minOpacity: 0.6,
       gradient: {
-        0.4: 'blue',
-        0.6: 'lime',
-        0.8: 'yellow',
-        1.0: 'red'
-      }
+        0.4: "blue",
+        0.6: "lime",
+        0.8: "yellow",
+        1.0: "red",
+      },
     }).addTo(map);
 
     return () => {
@@ -38,7 +41,7 @@ const HeatmapLayer = ({ points }: { points: number[][] }) => {
 };
 
 const InteractiveHeatMap = () => {
-  const center = [51.505, -0.09]; 
+  const center = [51.505, -0.09];
   const zoom = 13;
 
   const heatPoints = [
@@ -52,27 +55,27 @@ const InteractiveHeatMap = () => {
   const markers = [
     {
       position: [51.505, -0.09],
-      popup: 'Central Point',
+      popup: "Central Point",
     },
     {
       position: [51.51, -0.08],
-      popup: 'North East Point',
+      popup: "North East Point",
     },
     {
       position: [51.49, -0.1],
-      popup: 'South West Point',
+      popup: "South West Point",
     },
   ];
 
   const [selectedMarker, setSelectedMarker] = useState(null);
 
   return (
-    <div style={{ height: '100vh', width: '100%' }}>
-      <MapContainer 
+    <div style={{ height: "100vh", width: "100%" }}>
+      <MapContainer
         // @ts-expect-error - center is an array of numbers
-        center={center} 
-        zoom={zoom} 
-        style={{ height: '100%', width: '100%' }}
+        center={center}
+        zoom={zoom}
+        style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -104,18 +107,21 @@ const InteractiveHeatMap = () => {
 
       <div
         style={{
-          position: 'absolute',
+          position: "absolute",
           top: 10,
           right: 10,
           zIndex: 1000,
-          background: 'white',
-          padding: '10px',
-          borderRadius: '5px',
-          boxShadow: '0 0 5px rgba(0,0,0,0.3)',
+          background: "white",
+          padding: "10px",
+          borderRadius: "5px",
+          boxShadow: "0 0 5px rgba(0,0,0,0.3)",
         }}
       >
         <h3>Map Controls</h3>
-        <p>Selected Marker: {selectedMarker !== null ? markers[selectedMarker].popup : 'None'}</p>
+        <p>
+          Selected Marker:{" "}
+          {selectedMarker !== null ? markers[selectedMarker].popup : "None"}
+        </p>
       </div>
     </div>
   );

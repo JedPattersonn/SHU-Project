@@ -37,8 +37,7 @@ const data = {
       name: "Heatmap",
       url: "/map",
       icon: Map,
-    }
-
+    },
   ],
 };
 

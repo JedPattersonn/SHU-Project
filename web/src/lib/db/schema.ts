@@ -5,7 +5,7 @@ import {
   timestamp,
   float,
   boolean,
-  int
+  int,
 } from "drizzle-orm/mysql-core";
 
 export const user = mysqlTable("user", {

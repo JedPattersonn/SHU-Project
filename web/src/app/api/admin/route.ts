@@ -2,11 +2,10 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
 export async function GET() {
-  
-  const email = "admin@gmail.com"
-  const password = "password"
-  const name = "John Doe Admin"
-  const role = "admin"
+  const email = "admin@gmail.com";
+  const password = "password";
+  const name = "John Doe Admin";
+  const role = "admin";
 
   try {
     const user = await auth.api.signUpEmail({
