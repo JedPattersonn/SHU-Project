@@ -38,7 +38,6 @@ const data = {
       url: "/map",
       icon: Map,
     }
-
   ],
 };
 
