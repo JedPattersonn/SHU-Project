@@ -5,6 +5,7 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
+import { EnergyChart } from "@/components/dashboard/chart";
 
 export const metadata: Metadata = {
   title: "Dashboard | Energy Dashboard",
@@ -27,10 +28,9 @@ export default async function Home() {
         <StatCard title="Total Active Connections" value={100} />
         <StatCard title="Total Active Connections" value={100} />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <AnomalyAlertCard />
-        <HighestConsumptionZipcodesCard />
-      </div>
+      <AnomalyAlertCard />
+      <EnergyChart />
+      <HighestConsumptionZipcodesCard />
     </div>
   );
 }
