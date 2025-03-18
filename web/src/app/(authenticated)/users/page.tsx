@@ -1,6 +1,7 @@
 import { user, user as UserSchema } from "@/lib/db/schema"
 import { db } from "@/lib/db"
 import { TestTable } from "@/components/users/table"
+import { NewUserDialog } from "@/components/users/new-user-dialog"
 export default async function UsersPage() {
 
 const users = await db.select({
@@ -11,7 +12,10 @@ const users = await db.select({
 }).from(UserSchema)
 
     return (
-        <TestTable users={users} />
+        <div>
+            <NewUserDialog />
+            <TestTable users={users} />
+        </div>
     )
 }
 

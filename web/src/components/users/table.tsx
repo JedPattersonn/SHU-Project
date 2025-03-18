@@ -19,7 +19,7 @@ interface TableUser {
 export function TestTable({users}: {users: TableUser[]}){
     return(
         <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
+            <TableCaption>A list of Users.</TableCaption>
             <TableHeader>
                 <TableRow>
                 <TableHead>ID</TableHead>
