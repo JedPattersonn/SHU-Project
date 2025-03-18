@@ -28,9 +28,10 @@ export default async function Home() {
         <StatCard title="Total Active Connections" value={100} />
         <StatCard title="Total Active Connections" value={100} />
       </div>
-      <AnomalyAlertCard />
-      <EnergyChart />
-      <HighestConsumptionZipcodesCard />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+        <AnomalyAlertCard />
+        <HighestConsumptionZipcodesCard />
+      </div>
     </div>
   );
 }
