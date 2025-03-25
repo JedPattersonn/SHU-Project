@@ -21,6 +21,10 @@ export const user = mysqlTable("user", {
   banned: boolean("banned"),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+
+  // Custom Data
+  entityId: text("entity_id"),
+  userRole: text("user_role"),
 });
 
 export const session = mysqlTable("session", {

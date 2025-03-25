@@ -20,6 +20,18 @@ export const auth = betterAuth({
     admin(),
     bearer(),
   ],
+  user: {
+    additionalFields: {
+      entityId: {
+        type: "string",
+        required: true,
+      },
+      userRole: {
+        type: "string",
+        required: true,
+      },
+    },
+  },
   database: drizzleAdapter(db, {
     provider: "mysql",
     schema,
