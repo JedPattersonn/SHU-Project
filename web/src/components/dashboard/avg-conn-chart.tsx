@@ -48,7 +48,7 @@ export function ConnectionsChart() {
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
         <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>Amount of Smart Meters</CardDescription>
+        <CardDescription>Average Connections</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
