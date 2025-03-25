@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
+import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";  
+import { ConnectionsChart } from "@/components/dashboard/avg-conn-chart";
 import { EnergyChart } from "@/components/dashboard/chart";
 import { db } from "@/lib/db";
 import { city, energyData } from "@/lib/db/schema";
@@ -60,6 +62,10 @@ export default async function Home() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <AnomalyAlertCard />
         <HighestConsumptionZipcodesCard />
+      </div>
+      <div>
+        <SmartMeterChart />
+        <ConnectionsChart />
       </div>
     </div>
   );
