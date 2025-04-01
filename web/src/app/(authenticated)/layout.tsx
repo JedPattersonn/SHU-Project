@@ -4,6 +4,7 @@ import { ClientLayout } from "./client-layout";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { user } from "@/lib/db/schema";
 
 export default async function AuthenticatedLayout({
   children,
@@ -20,7 +21,7 @@ export default async function AuthenticatedLayout({
 
   return (
     <SidebarProvider>
-      <AppSidebar user={session.user} />
+      <AppSidebar user={session.user as typeof user.$inferSelect} />
       <SidebarInset>
         <ClientLayout />
         <div className="flex-1 p-4 pt-0">{children}</div>

@@ -5,7 +5,7 @@ import { Metadata } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
-import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";  
+import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";
 import { ConnectionsChart } from "@/components/dashboard/avg-conn-chart";
 import { EnergyChart } from "@/components/dashboard/chart";
 import { db } from "@/lib/db";
@@ -28,45 +28,49 @@ export default async function Home() {
 
   const cityId = "56b085b2-7e5e-4982-bf58-297cfe5b3b3f";
 
-  const resultsAnnualConsume = await db.select()
-  .from(energyData)
-  .where(eq(energyData.cityId, cityId));
+  const resultsAnnualConsume = await db
+    .select()
+    .from(energyData)
+    .where(eq(energyData.cityId, cityId));
 
-  let totalAnnualConsume = 0
+  let totalAnnualConsume = 0;
   resultsAnnualConsume.map((result) => {
-    totalAnnualConsume += result.annualConsume
+    totalAnnualConsume += result.annualConsume;
+  });
 
-    
-  })
+  const resultsConnections = await db
+    .select()
+    .from(energyData)
+    .where(eq(energyData.cityId, cityId));
 
-  const resultsConnections = await db.select()
-  .from(energyData)
-  .where(eq(energyData.cityId, cityId));
-
-  let totalConnections = 0
+  let totalConnections = 0;
   resultsConnections.map((result) => {
-    totalConnections += result.numConnections
-
-    
-  })
-  
+    totalConnections += result.numConnections;
+  });
 
   return (
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Consumption" value={`${totalAnnualConsume} kwh`} />
-        <StatCard title="Total Active Connections" value={`${totalConnections}`} />
+        <StatCard
+          title="Total Consumption"
+          value={`${totalAnnualConsume} kwh`}
+        />
+        <StatCard
+          title="Total Active Connections"
+          value={`${totalConnections}`}
+        />
         <StatCard title="Total Active Connections" value={`100`} />
         <StatCard title="Total Active Connections" value={`100`} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
         <AnomalyAlertCard />
         <HighestConsumptionZipcodesCard />
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
         <SmartMeterChart />
         <ConnectionsChart />
       </div>
+    </div>
     </div>
   );
 }
