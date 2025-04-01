@@ -30,7 +30,7 @@ const chartData = [
 const chartConfig = {
   HasSmart: {
     label: "Owns a Smart Meter",
-    color:"rgba(99, 101, 101, 0.75)",
+    color:"rgb(255, 255, 255)",
   },
   NoSmart: {
     label: "Doesnt Own a Smart Meter",
