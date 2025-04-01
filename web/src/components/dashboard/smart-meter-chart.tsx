@@ -29,11 +29,11 @@ const chartData = [
 //decides the colour and what the label says
 const chartConfig = {
   HasSmart: {
-    label: "Owns a Smart Meter",
+    label: "Owns a Smart Meter ",
     color:"rgba(99, 101, 101, 0.75)",
   },
   NoSmart: {
-    label: "Doesnt Own a Smart Meter",
+    label: "Doesnt Own a Smart Meter ",
     color:"rgb(0, 0, 0)",
   },
 } satisfies ChartConfig
@@ -48,8 +48,8 @@ export function SmartMeterChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>Amount of Smart Meters</CardDescription>
+        <CardTitle>Percent of Smart Meters</CardTitle>
+        <CardDescription>Comparing amount of Smart Meters</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -84,7 +84,7 @@ export function SmartMeterChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {totalVisitors}
                         </tspan>
                         <tspan
                           x={viewBox.cx}

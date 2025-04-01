@@ -47,7 +47,7 @@ export function ConnectionsChart() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
+        <CardTitle>Average Percent of Connections</CardTitle>
         <CardDescription>Average Connections</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
