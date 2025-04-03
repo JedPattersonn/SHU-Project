@@ -6,6 +6,10 @@ import * as schema from "./db/schema";
 import { headers } from "next/headers";
 import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
+import { Resend } from "resend";
+import OTPEmail from "@/components/emails/otp";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const auth = betterAuth({
   plugins: [
@@ -13,7 +17,19 @@ export const auth = betterAuth({
       otpOptions: {
         async sendOTP({ user, otp }) {
           console.log("Sending OTP to user", user.email, "with OTP", otp);
+
+          const { error } = await resend.emails.send({
+            from: "no-reply@emails.jedpatterson.com",
+            to: user.email,
+            subject: "Your One-Time Password",
+            react: OTPEmail({ otp, firstName: user.name.split(" ")[0] }),
+          });
+
+          if (error) {
+            console.error("Error sending OTP", error);
+          }
         },
+        period: 10,
       },
       skipVerificationOnEnable: true,
     }),

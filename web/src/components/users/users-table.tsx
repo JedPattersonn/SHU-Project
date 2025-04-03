@@ -86,9 +86,7 @@ export function UsersTable({ users }: { users: TableUser[] }) {
                     <Button variant="outline" onClick={() => setOpen(false)}>
                       Cancel
                     </Button>
-                    <Button onClick={() => impersonateUser(user.id)}>
-                      Confirm
-                    </Button>
+                    <Button onClick={() => impersonateUser()}>Confirm</Button>
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
