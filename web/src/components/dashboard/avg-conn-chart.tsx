@@ -66,6 +66,8 @@ export function ConnectionsChart() {
               nameKey="browser"
               innerRadius={60}
               strokeWidth={5}
+              startAngle={90}
+              endAngle={450}
             >
               {/*centers the label in the middle of the chart*/}
               <Label
