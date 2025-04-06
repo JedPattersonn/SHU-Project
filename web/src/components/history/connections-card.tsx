@@ -120,7 +120,7 @@ export function ConnectionsCard({ data }: ConnectionsCardProps) {
                   axisLine={true}
                   tickMargin={12}
                   stroke="hsl(var(--border))"
-                  tickFormatter={(value) => `${value.toLocaleString()}k`}
+                  tickFormatter={(value) => value.toLocaleString()}
                   width={65}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
