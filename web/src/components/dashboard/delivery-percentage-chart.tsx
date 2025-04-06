@@ -16,36 +16,71 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { energyData } from "@/lib/db/schema";
 
-//hard coded data for the chart
-const chartData = [
-  { browser: "HasSmart", visitors: 275, fill: "var(--color-HasSmart)" },
-  { browser: "NoSmart", visitors: 200, fill: "var(--color-NoSmart)" },
-];
+type EnergyData = typeof energyData.$inferSelect;
 
 //decides the colour and what the label says
 const chartConfig = {
-  HasSmart: {
-    label: "Owns a Smart Meter",
-    color: "rgb(255, 255, 255)",
-  },
-  NoSmart: {
-    label: "Doesnt Own a Smart Meter",
+  Delivered: {
+    label: "Delivered",
     color: "rgb(0, 0, 0)",
+  },
+  NotDelivered: {
+    label: "Not Delivered",
+    color: "rgb(255, 255, 255)",
   },
 } satisfies ChartConfig;
 
-//the math for the pie chart
-export function ConnectionsChart() {
+interface DeliveryPercentagePieChartProps {
+  data: EnergyData[];
+  year: number;
+}
+
+export function DeliveryPercentagePieChart({
+  data,
+  year,
+}: DeliveryPercentagePieChartProps) {
+  // Process the data to calculate delivery percentage statistics
+  const chartData = React.useMemo(() => {
+    let totalDelivered = 0;
+    let totalConnections = 0;
+
+    data.forEach((item) => {
+      if (item.deliveryPerc && item.numConnections) {
+        const deliveredCount = Math.round(
+          (item.deliveryPerc / 100) * item.numConnections
+        );
+        totalDelivered += deliveredCount;
+        totalConnections += item.numConnections;
+      }
+    });
+
+    const notDelivered = totalConnections - totalDelivered;
+
+    return [
+      {
+        browser: "Delivered",
+        visitors: totalDelivered,
+        fill: "var(--color-Delivered)",
+      },
+      {
+        browser: "NotDelivered",
+        visitors: notDelivered,
+        fill: "var(--color-NotDelivered)",
+      },
+    ];
+  }, [data]);
+
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, []);
+  }, [chartData]);
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>Amount of Smart Meters</CardDescription>
+        <CardTitle>Energy Delivery Distribution</CardTitle>
+        <CardDescription>Year: {year}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -63,8 +98,7 @@ export function ConnectionsChart() {
               nameKey="browser"
               innerRadius={60}
               strokeWidth={5}
-              startAngle={90}
-              endAngle={450}
+              startAngle={0}
             >
               {/*centers the label in the middle of the chart*/}
               <Label
@@ -89,7 +123,7 @@ export function ConnectionsChart() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Avg Percent
+                          Total Connections
                         </tspan>
                       </text>
                     );
