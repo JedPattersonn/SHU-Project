@@ -3,7 +3,7 @@ import { energyData } from "../db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export async function getYearlyData() {
-  const cityId = "56b085b2-7e5e-4982-bf58-297cfe5b3b3f";
+  const cityId = "bf82efd0-3b27-43c5-b85c-d9d3565ed09c";
 
   const yearlyData = await db
     .select({
