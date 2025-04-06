@@ -12,13 +12,13 @@ export async function HighestConsumptionZipcodesCard() {
       <CardContent>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <p className="text-sm text-muted-foreground">
+            <div className="text-sm text-muted-foreground">
               {highestConsumptionZipcodes.map((zipcode) => (
                 <div key={zipcode.zipCodeTo}>
                   {zipcode.zipCodeTo} - {zipcode.annualConsume}
                 </div>
               ))}
-            </p>
+            </div>
           </div>
         </div>
       </CardContent>

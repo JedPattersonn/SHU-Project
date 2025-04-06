@@ -47,23 +47,23 @@ const getMenuItems = (user: typeof User.$inferSelect) => {
     },
   ];
 
-  // Add admin-specific items if user has admin role
-  if (user.role === "admin") {
-    return [
-      {
-        name: "Users",
-        url: "/users",
-        icon: Users,
-      },
-      {
-        name: "Data",
-        url: "/data",
-        icon: Database,
-      },
-    ];
-  }
+  const adminItems = [
+    {
+      name: "Users",
+      url: "/users",
+      icon: Users,
+    },
+    {
+      name: "Data",
+      url: "/data",
+      icon: Database,
+    },
+  ];
 
-  return baseItems;
+  return {
+    baseItems,
+    adminItems: user.role === "admin" ? adminItems : [],
+  };
 };
 
 export function AppSidebar({
@@ -72,7 +72,7 @@ export function AppSidebar({
 }: React.ComponentProps<typeof Sidebar> & {
   user: typeof User.$inferSelect;
 }) {
-  const menuItems = getMenuItems(user);
+  const { baseItems, adminItems } = getMenuItems(user);
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -96,7 +96,20 @@ export function AppSidebar({
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavOptions projects={menuItems} />
+        <NavOptions projects={baseItems} />
+        {adminItems.length > 0 && (
+          <>
+            <div className="my-2 px-4">
+              <div className="h-px bg-border" />
+            </div>
+            <div className="px-4 py-2">
+              <h2 className="text-sm font-semibold text-muted-foreground">
+                Admin
+              </h2>
+            </div>
+            <NavOptions projects={adminItems} />
+          </>
+        )}
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
