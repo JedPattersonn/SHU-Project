@@ -1,26 +1,57 @@
 import React, { Suspense } from "react";
-import InteractiveHeatMap from "@/components/map/interactive-map";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
-import { energyData } from "@/lib/db/schema";
+import { energyData, city, networkManager } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { enrichEnergyDataWithCoordinates } from "@/lib/utils/postal-code";
 import Loading from "./loading";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { MapContainer } from "@/components/map/map-container";
 
 export const metadata: Metadata = {
   title: "Map | Energy Dashboard",
 };
 
 async function MapWithData() {
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-  const rawData = await db
-    .select()
-    .from(energyData)
-    .where(eq(energyData.cityId, "56b085b2-7e5e-4982-bf58-297cfe5b3b3f"));
+  if (!session) {
+    redirect("/login");
+  }
+
+  const { userRole, entityId, role } = session.user;
+
+  // Fetch cities and networks for admin users
+  const cities = await db.select().from(city);
+  const networks = await db.select().from(networkManager);
+
+  let rawData: (typeof energyData.$inferSelect)[] = [];
+  if (userRole === "city") {
+    rawData = await db
+      .select()
+      .from(energyData)
+      .where(eq(energyData.cityId, entityId));
+  } else if (userRole === "network") {
+    rawData = await db
+      .select()
+      .from(energyData)
+      .where(eq(energyData.networkManagerId, entityId));
+  }
+
   const enrichedData = await enrichEnergyDataWithCoordinates(rawData);
 
-  return <InteractiveHeatMap energyData={enrichedData} />;
+  return (
+    <MapContainer
+      initialData={enrichedData}
+      cities={cities}
+      networks={networks}
+      isAdmin={role === "admin"}
+    />
+  );
 }
 
 export default function Map() {

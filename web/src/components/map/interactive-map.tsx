@@ -63,7 +63,7 @@ const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({
   const [showMarkers, setShowMarkers] = useState(true);
 
   return (
-    <div className="p-4 h-screen">
+    <div className="p-4 h-screen z-0">
       <div className="h-full w-full rounded-lg overflow-hidden shadow-lg relative">
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1000] bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg">
           <div className="flex items-center gap-2">
