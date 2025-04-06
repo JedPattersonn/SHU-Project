@@ -1,4 +1,3 @@
-import { AnomalyAlertCard } from "@/components/dashboard/anomaly-alert-card";
 import { StatCard } from "@/components/dashboard/stat-card";
 import { auth } from "@/lib/auth";
 import { Metadata } from "next";
@@ -7,11 +6,9 @@ import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
 import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";
 import { ConnectionsChart } from "@/components/dashboard/avg-conn-chart";
-import { EnergyChart } from "@/components/dashboard/chart";
 import { db } from "@/lib/db";
-import { city, energyData } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
-import { number } from "better-auth";
+import { energyData } from "@/lib/db/schema";
+import { eq } from "drizzle-orm";
 
 export const metadata: Metadata = {
   title: "Dashboard | Energy Dashboard",

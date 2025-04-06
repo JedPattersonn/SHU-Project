@@ -1,49 +1,45 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import * as React from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 //hard coded data for the chart
 const chartData = [
   { browser: "HasSmart", visitors: 275, fill: "var(--color-HasSmart)" },
   { browser: "NoSmart", visitors: 200, fill: "var(--color-NoSmart)" },
- 
-]
+];
 
 //decides the colour and what the label says
 const chartConfig = {
   HasSmart: {
     label: "Owns a Smart Meter",
-    color:"rgba(99, 101, 101, 0.75)",
+    color: "rgba(99, 101, 101, 0.75)",
   },
   NoSmart: {
     label: "Doesnt Own a Smart Meter",
-    color:"rgb(0, 0, 0)",
+    color: "rgb(0, 0, 0)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-//the math for the pie chart 
+//the math for the pie chart
 export function SmartMeterChart() {
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
-
+    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+  }, []);
 
   return (
     <Card className="flex flex-col">
@@ -68,7 +64,7 @@ export function SmartMeterChart() {
               innerRadius={60}
               strokeWidth={5}
             >
-            {/*centers the label in the middle of the chart*/}
+              {/*centers the label in the middle of the chart*/}
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -94,7 +90,7 @@ export function SmartMeterChart() {
                           Smart Meters
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -103,5 +99,5 @@ export function SmartMeterChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

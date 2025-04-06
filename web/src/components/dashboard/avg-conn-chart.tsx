@@ -1,48 +1,45 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import * as React from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
 
 //hard coded data for the chart
 const chartData = [
   { browser: "HasSmart", visitors: 275, fill: "var(--color-HasSmart)" },
   { browser: "NoSmart", visitors: 200, fill: "var(--color-NoSmart)" },
- 
-]
+];
 
 //decides the colour and what the label says
 const chartConfig = {
   HasSmart: {
     label: "Owns a Smart Meter",
-    color:"rgb(255, 255, 255)",
+    color: "rgb(255, 255, 255)",
   },
   NoSmart: {
     label: "Doesnt Own a Smart Meter",
-    color:"rgb(0, 0, 0)",
+    color: "rgb(0, 0, 0)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-//the math for the pie chart 
+//the math for the pie chart
 export function ConnectionsChart() {
   const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
+  }, []);
 
   return (
     <Card className="flex flex-col">
@@ -92,10 +89,10 @@ export function ConnectionsChart() {
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Avg Percent 
+                          Avg Percent
                         </tspan>
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -104,5 +101,5 @@ export function ConnectionsChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

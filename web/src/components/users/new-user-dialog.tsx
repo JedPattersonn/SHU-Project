@@ -65,7 +65,7 @@ export function NewUserDialog({
         entityId: "",
         userRole: "",
       });
-    } catch (error) {
+    } catch {
       toast.error("Failed to create user");
     } finally {
       setLoading(false);
