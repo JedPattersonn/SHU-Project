@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { energyData, city, networkManager } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { enrichEnergyDataWithCoordinates } from "@/lib/utils/postal-code";
 import Loading from "./loading";
 import { auth } from "@/lib/auth";
@@ -25,21 +25,31 @@ async function MapWithData() {
 
   const { userRole, entityId, role } = session.user;
 
-  // Fetch cities and networks for admin users
   const cities = await db.select().from(city);
   const networks = await db.select().from(networkManager);
+
+  // First, find the most recent year in the energy data
+  const mostRecentYearResult = await db
+    .select({ maxYear: sql<number>`MAX(${energyData.year})` })
+    .from(energyData);
+
+  const mostRecentYear = mostRecentYearResult[0].maxYear;
 
   let rawData: (typeof energyData.$inferSelect)[] = [];
   if (userRole === "city") {
     rawData = await db
       .select()
       .from(energyData)
-      .where(eq(energyData.cityId, entityId));
+      .where(
+        sql`${energyData.cityId} = ${entityId} AND ${energyData.year} = ${mostRecentYear}`
+      );
   } else if (userRole === "network") {
     rawData = await db
       .select()
       .from(energyData)
-      .where(eq(energyData.networkManagerId, entityId));
+      .where(
+        sql`${energyData.networkManagerId} = ${entityId} AND ${energyData.year} = ${mostRecentYear}`
+      );
   }
 
   const enrichedData = await enrichEnergyDataWithCoordinates(rawData);

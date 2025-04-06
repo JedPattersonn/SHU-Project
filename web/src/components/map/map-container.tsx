@@ -47,13 +47,13 @@ export function MapContainer({
 
   return (
     <div className="flex flex-col gap-6 p-4">
-      {isAdmin && (
+      {/* {isAdmin && (
         <MapSelection
           cities={cities}
           networks={networks}
           onSelectionChange={handleSelectionChange}
         />
-      )}
+      )} */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <InteractiveHeatMap energyData={mapData} />
       </div>
