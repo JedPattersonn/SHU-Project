@@ -6,6 +6,7 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import {
   Card,
@@ -34,14 +35,14 @@ export function SmartMeterCard({ data }: SmartMeterCardProps) {
   }));
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader>
         <CardTitle>Smart Meter Adoption</CardTitle>
         <CardDescription>
           Percentage of customers with smart meters
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-6">
         <div className="h-[300px]">
           <ChartContainer
             config={{
@@ -53,16 +54,28 @@ export function SmartMeterCard({ data }: SmartMeterCardProps) {
           >
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <XAxis dataKey="year" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                <XAxis
+                  dataKey="year"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                  tickFormatter={(value) => `${value}%`}
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
+                <Legend />
                 <Line
                   type="monotone"
                   dataKey="smartMeters"
-                  stroke="#2563eb"
+                  stroke="hsl(var(--chart-2))"
                   strokeWidth={2}
-                  dot={{ r: 4 }}
+                  dot={{ r: 4, fill: "hsl(var(--chart-2))" }}
+                  activeDot={{ r: 6, fill: "hsl(var(--chart-2))" }}
                 />
               </LineChart>
             </ResponsiveContainer>
