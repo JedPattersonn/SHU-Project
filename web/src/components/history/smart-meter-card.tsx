@@ -1,7 +1,7 @@
 "use client";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -53,31 +53,63 @@ export function SmartMeterCard({ data }: SmartMeterCardProps) {
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <AreaChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 60,
+                }}
+              >
+                <defs>
+                  <linearGradient
+                    id="colorSmartMeters"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--chart-2))"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--chart-2))"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="year"
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
                 />
                 <YAxis
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
                   tickFormatter={(value) => `${value}%`}
+                  width={60}
+                  domain={[0, 100]}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Line
+                <Area
                   type="monotone"
                   dataKey="smartMeters"
                   stroke="hsl(var(--chart-2))"
+                  fillOpacity={0.4}
+                  fill="url(#colorSmartMeters)"
                   strokeWidth={2}
-                  dot={{ r: 4, fill: "hsl(var(--chart-2))" }}
-                  activeDot={{ r: 6, fill: "hsl(var(--chart-2))" }}
+                  activeDot={{ r: 6 }}
                 />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>

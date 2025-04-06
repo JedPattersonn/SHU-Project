@@ -199,8 +199,8 @@ async function validateAndInsertData(
 
 async function main() {
   try {
-    const year = 2017;
-    const energyType = "electricity" as const;
+    const year = 2020;
+    const energyType = "gas" as const;
     console.log(`Starting data import for year ${year} (${energyType})...`);
 
     const csvContent = await Bun.file("data.csv").text();

@@ -18,7 +18,6 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 
 interface ConnectionTypeCardProps {
@@ -79,7 +78,15 @@ export function ConnectionTypeCard({ data }: ConnectionTypeCardProps) {
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
+              <AreaChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 500,
+                }}
+              >
                 <defs>
                   <linearGradient
                     id="colorResidential"
@@ -140,43 +147,48 @@ export function ConnectionTypeCard({ data }: ConnectionTypeCardProps) {
                 <XAxis
                   dataKey="year"
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
                 />
                 <YAxis
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => `${value}k`}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
+                  tickFormatter={(value) => `${(value / 1000).toFixed(1)}k`}
+                  width={65}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
                 <Area
                   type="monotone"
                   dataKey="residential"
                   stackId="1"
                   stroke="hsl(var(--chart-1))"
-                  fillOpacity={1}
+                  fillOpacity={0.4}
                   fill="url(#colorResidential)"
                   strokeWidth={2}
+                  activeDot={{ r: 6 }}
                 />
                 <Area
                   type="monotone"
                   dataKey="commercial"
                   stackId="1"
                   stroke="hsl(var(--chart-2))"
-                  fillOpacity={1}
+                  fillOpacity={0.4}
                   fill="url(#colorCommercial)"
                   strokeWidth={2}
+                  activeDot={{ r: 6 }}
                 />
                 <Area
                   type="monotone"
                   dataKey="industrial"
                   stackId="1"
                   stroke="hsl(var(--chart-3))"
-                  fillOpacity={1}
+                  fillOpacity={0.4}
                   fill="url(#colorIndustrial)"
                   strokeWidth={2}
+                  activeDot={{ r: 6 }}
                 />
               </AreaChart>
             </ResponsiveContainer>

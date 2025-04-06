@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import {
   Card,
@@ -61,7 +60,15 @@ export function ConnectionsCard({ data }: ConnectionsCardProps) {
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
+              <AreaChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 60,
+                }}
+              >
                 <defs>
                   <linearGradient
                     id="colorConnections"
@@ -104,17 +111,19 @@ export function ConnectionsCard({ data }: ConnectionsCardProps) {
                 <XAxis
                   dataKey="year"
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
                 />
                 <YAxis
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => `${value}k`}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
+                  tickFormatter={(value) => `${value.toLocaleString()}k`}
+                  width={65}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
                 <Area
                   type="monotone"
                   dataKey="connections"

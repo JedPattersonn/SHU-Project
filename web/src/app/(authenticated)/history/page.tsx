@@ -23,7 +23,10 @@ export default async function HistoryPage() {
     redirect("/login");
   }
 
-  const yearlyData = await getYearlyData();
+  const userRole = session.user.userRole as "city" | "network";
+  const entityId = session.user.entityId;
+
+  const yearlyData = await getYearlyData(userRole, entityId);
 
   return (
     <div className="space-y-8">

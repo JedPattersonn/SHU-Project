@@ -6,7 +6,6 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 import {
   Card,
@@ -55,9 +54,9 @@ export function AnnualConsumptionCard({ data }: AnnualConsumptionCardProps) {
                 data={chartData}
                 margin={{
                   top: 10,
-                  right: 30,
-                  left: 0,
-                  bottom: 0,
+                  right: 10,
+                  left: 10,
+                  bottom: 50,
                 }}
               >
                 <defs>
@@ -91,19 +90,18 @@ export function AnnualConsumptionCard({ data }: AnnualConsumptionCardProps) {
                   tickLine={false}
                   axisLine={false}
                   tickMargin={8}
-                  tickFormatter={(value) => `${value}k`}
+                  tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
                 />
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent indicator="line" />}
                 />
-                <Legend />
                 <Area
                   type="monotone"
                   dataKey="consumption"
                   stroke="hsl(var(--chart-1))"
-                  fillOpacity={1}
-                  fill="url(#colorConsumption)"
+                  fillOpacity={0.4}
+                  fill="url(#colorElectricity)"
                   strokeWidth={2}
                   activeDot={{ r: 6 }}
                 />

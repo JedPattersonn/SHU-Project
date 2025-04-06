@@ -12,13 +12,12 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  Legend,
 } from "recharts";
 
 interface EnergyTypeComparisonCardProps {
@@ -35,15 +34,11 @@ interface EnergyTypeComparisonCardProps {
 export function EnergyTypeComparisonCard({
   data,
 }: EnergyTypeComparisonCardProps) {
-  // Since we don't have separate electricity and gas data in the current query,
-  // we'll simulate it by splitting the total consumption
-  // In a real implementation, you would modify the query to get separate data
-
   const chartData = data.map((item) => {
-    // Simulate electricity being 60% and gas being 40% of total consumption
-    // This is just for demonstration - in a real app, you'd get actual data
-    const electricityConsumption = item.totalConsumption * 0.6;
-    const gasConsumption = item.totalConsumption * 0.4;
+    const electricityConsumption =
+      item.totalConsumption * (item.avgDeliveryPerc / 100);
+    const gasConsumption =
+      item.totalConsumption * ((100 - item.avgDeliveryPerc) / 100);
 
     return {
       year: item.year.toString(),
@@ -75,39 +70,83 @@ export function EnergyTypeComparisonCard({
             }}
           >
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <AreaChart
+                data={chartData}
+                margin={{
+                  top: 10,
+                  right: 10,
+                  left: 10,
+                  bottom: 60,
+                }}
+              >
+                <defs>
+                  <linearGradient
+                    id="colorElectricity"
+                    x1="0"
+                    y1="0"
+                    x2="0"
+                    y2="1"
+                  >
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--chart-1))"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--chart-1))"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                  <linearGradient id="colorGas" x1="0" y1="0" x2="0" y2="1">
+                    <stop
+                      offset="5%"
+                      stopColor="hsl(var(--chart-3))"
+                      stopOpacity={0.8}
+                    />
+                    <stop
+                      offset="95%"
+                      stopColor="hsl(var(--chart-3))"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis
                   dataKey="year"
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
                 />
                 <YAxis
                   tickLine={false}
-                  axisLine={false}
-                  tickMargin={8}
-                  tickFormatter={(value) => `${value}k`}
+                  axisLine={true}
+                  tickMargin={12}
+                  stroke="hsl(var(--border))"
+                  tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
+                  width={65}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Legend />
-                <Line
+                <Area
                   type="monotone"
                   dataKey="electricity"
                   stroke="hsl(var(--chart-1))"
+                  fillOpacity={0.4}
+                  fill="url(#colorElectricity)"
                   strokeWidth={2}
-                  dot={{ r: 4 }}
                   activeDot={{ r: 6 }}
                 />
-                <Line
+                <Area
                   type="monotone"
                   dataKey="gas"
                   stroke="hsl(var(--chart-3))"
+                  fillOpacity={0.4}
+                  fill="url(#colorGas)"
                   strokeWidth={2}
-                  dot={{ r: 4 }}
                   activeDot={{ r: 6 }}
                 />
-              </LineChart>
+              </AreaChart>
             </ResponsiveContainer>
           </ChartContainer>
         </div>
