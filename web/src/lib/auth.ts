@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { Resend } from "resend";
 import OTPEmail from "@/components/emails/otp";
+import ResetPasswordEmail from "@/components/emails/reset-password";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -54,6 +55,28 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      console.log(
+        "Sending reset password email to",
+        user.email,
+        "with URL",
+        url
+      );
+
+      const { error } = await resend.emails.send({
+        from: "no-reply@emails.jedpatterson.com",
+        to: user.email,
+        subject: "Reset Your Password",
+        react: ResetPasswordEmail({
+          firstName: user.name.split(" ")[0],
+          resetLink: url,
+        }),
+      });
+
+      if (error) {
+        console.error("Error sending reset password email", error);
+      }
+    },
   },
 });
 
