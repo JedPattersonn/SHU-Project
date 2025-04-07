@@ -97,7 +97,8 @@ export function NetworkEnergyData({
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="relative">
+        <div className="space-y-1.5">
+          <Label htmlFor="search">Search</Label>
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search by street, area, or zip code..."
