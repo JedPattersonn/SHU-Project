@@ -41,7 +41,6 @@ export function DeliveryPercentagePieChart({
   data,
   year,
 }: DeliveryPercentagePieChartProps) {
-  // Process the data to calculate delivery percentage statistics
   const chartData = React.useMemo(() => {
     let totalDelivered = 0;
     let totalConnections = 0;
@@ -56,25 +55,25 @@ export function DeliveryPercentagePieChart({
       }
     });
 
-    const notDelivered = totalConnections - totalDelivered;
+    const deliveredPercentage =
+      totalConnections > 0
+        ? Math.round((totalDelivered / totalConnections) * 100)
+        : 0;
+    const notDeliveredPercentage = 100 - deliveredPercentage;
 
     return [
       {
         browser: "Delivered",
-        visitors: totalDelivered,
+        visitors: deliveredPercentage,
         fill: "var(--color-Delivered)",
       },
       {
         browser: "NotDelivered",
-        visitors: notDelivered,
+        visitors: notDeliveredPercentage,
         fill: "var(--color-NotDelivered)",
       },
     ];
   }, [data]);
-
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, [chartData]);
 
   return (
     <Card className="flex flex-col">
@@ -116,15 +115,18 @@ export function DeliveryPercentagePieChart({
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {chartData.find(
+                            (item) => item.browser === "Delivered"
+                          )?.visitors || 0}
+                          %
                         </tspan>
-                        <tspan
+                        {/* <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Total Connections
-                        </tspan>
+                          Energy Delivered
+                        </tspan> */}
                       </text>
                     );
                   }

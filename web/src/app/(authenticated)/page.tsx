@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
 import { db } from "@/lib/db";
 import { energyData, city } from "@/lib/db/schema";
-import { eq, desc, max, and } from "drizzle-orm";
+import { eq, desc, max } from "drizzle-orm";
 import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";
 import { DeliveryPercentagePieChart } from "@/components/dashboard/delivery-percentage-chart";
 
@@ -28,7 +28,6 @@ export default async function Home() {
   const userRole = session.user.userRole as "city" | "network";
   const entityId = session.user.entityId;
 
-  // Get city name
   const cityData = await db
     .select({ name: city.name })
     .from(city)
@@ -42,7 +41,6 @@ export default async function Home() {
 
   const cityName = cityData[0]?.name || "Unknown City";
 
-  // Get the most recent year for this city
   const maxYearResult = await db
     .select({ maxYear: max(energyData.year) })
     .from(energyData)
@@ -56,7 +54,6 @@ export default async function Home() {
 
   const mostRecentYear = maxYearResult[0]?.maxYear || 0;
 
-  // Get data for the most recent year
   const resultsAnnualConsume = await db
     .select()
     .from(energyData)
@@ -73,13 +70,11 @@ export default async function Home() {
     totalAnnualConsume += result.annualConsume;
   });
 
-  // Calculate total connections for the most recent year
   let totalConnections = 0;
   resultsAnnualConsume.forEach((result: EnergyData) => {
     totalConnections += result.numConnections;
   });
 
-  // Get top 5 zipcodes by consumption
   const topZipcodes = await db
     .select({
       zipCode: energyData.zipCodeFrom,

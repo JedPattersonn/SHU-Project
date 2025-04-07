@@ -51,25 +51,25 @@ export function SmartMeterChart({ data, year }: SmartMeterChartProps) {
       }
     });
 
-    const noSmartMeters = totalConnections - totalSmartMeters;
+    const smartMeterPercentage =
+      totalConnections > 0
+        ? Math.round((totalSmartMeters / totalConnections) * 100)
+        : 0;
+    const noSmartMeterPercentage = 100 - smartMeterPercentage;
 
     return [
       {
         browser: "HasSmart",
-        visitors: totalSmartMeters,
+        visitors: smartMeterPercentage,
         fill: "var(--color-HasSmart)",
       },
       {
         browser: "NoSmart",
-        visitors: noSmartMeters,
+        visitors: noSmartMeterPercentage,
         fill: "var(--color-NoSmart)",
       },
     ];
   }, [data]);
-
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
-  }, [chartData]);
 
   return (
     <Card className="flex flex-col">
@@ -110,15 +110,17 @@ export function SmartMeterChart({ data, year }: SmartMeterChartProps) {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {chartData.find((item) => item.browser === "HasSmart")
+                            ?.visitors || 0}
+                          %
                         </tspan>
-                        <tspan
+                        {/* <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Total Connections
-                        </tspan>
+                          Smart Meter Adoption
+                        </tspan> */}
                       </text>
                     );
                   }
