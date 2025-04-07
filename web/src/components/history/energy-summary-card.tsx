@@ -7,6 +7,14 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface EnergySummaryCardProps {
   data: {
@@ -20,23 +28,36 @@ interface EnergySummaryCardProps {
 }
 
 export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
+  const [comparisonYear, setComparisonYear] = useState<number>(
+    data.length >= 2 ? data[data.length - 2].year : 0
+  );
+
+  useEffect(() => {
+    if (data.length >= 2) {
+      setComparisonYear(data[data.length - 2].year);
+    }
+  }, [data]);
+
   if (data.length < 2) return null;
 
   const latestYear = data[data.length - 1];
-  const previousYear = data[data.length - 2];
+
+  const comparisonYearData =
+    data.find((item) => item.year === comparisonYear) || data[data.length - 2];
 
   const consumptionChange =
-    ((latestYear.totalConsumption - previousYear.totalConsumption) /
-      previousYear.totalConsumption) *
+    ((latestYear.totalConsumption - comparisonYearData.totalConsumption) /
+      comparisonYearData.totalConsumption) *
     100;
   const smartMeterChange =
-    latestYear.avgSmartMeterPerc - previousYear.avgSmartMeterPerc;
+    latestYear.avgSmartMeterPerc - comparisonYearData.avgSmartMeterPerc;
   const connectionsChange =
-    ((latestYear.totalConnections - previousYear.totalConnections) /
-      previousYear.totalConnections) *
+    ((latestYear.totalConnections - comparisonYearData.totalConnections) /
+      comparisonYearData.totalConnections) *
     100;
   const activeConnectionsChange =
-    latestYear.avgActiveConnectionsPerc - previousYear.avgActiveConnectionsPerc;
+    latestYear.avgActiveConnectionsPerc -
+    comparisonYearData.avgActiveConnectionsPerc;
 
   const formatNumber = (num: number) => {
     if (num >= 1000000) {
@@ -65,9 +86,31 @@ export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
 
   return (
     <Card className="overflow-hidden">
-      <CardHeader>
-        <CardTitle>Energy Summary</CardTitle>
-        <CardDescription>Key metrics for {latestYear.year}</CardDescription>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>Energy Summary</CardTitle>
+          <CardDescription>Key metrics for {latestYear.year}</CardDescription>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">Compare with:</span>
+          <Select
+            value={comparisonYear.toString()}
+            onValueChange={(value) => setComparisonYear(parseInt(value))}
+          >
+            <SelectTrigger className="w-[120px]">
+              <SelectValue placeholder="Select year" />
+            </SelectTrigger>
+            <SelectContent>
+              {data
+                .filter((item) => item.year !== latestYear.year)
+                .map((item) => (
+                  <SelectItem key={item.year} value={item.year.toString()}>
+                    {item.year}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -89,7 +132,7 @@ export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
               {formatNumber(latestYear.totalConsumption)} kWh
             </p>
             <p className="text-xs text-muted-foreground">
-              vs {previousYear.year}
+              vs {comparisonYearData.year}
             </p>
           </div>
 
@@ -111,7 +154,7 @@ export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
               {formatPercentage(latestYear.avgSmartMeterPerc)}
             </p>
             <p className="text-xs text-muted-foreground">
-              vs {previousYear.year}
+              vs {comparisonYearData.year}
             </p>
           </div>
 
@@ -133,7 +176,7 @@ export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
               {formatNumber(latestYear.totalConnections)}
             </p>
             <p className="text-xs text-muted-foreground">
-              vs {previousYear.year}
+              vs {comparisonYearData.year}
             </p>
           </div>
 
@@ -155,7 +198,7 @@ export function EnergySummaryCard({ data }: EnergySummaryCardProps) {
               {formatPercentage(latestYear.avgActiveConnectionsPerc)}
             </p>
             <p className="text-xs text-muted-foreground">
-              vs {previousYear.year}
+              vs {comparisonYearData.year}
             </p>
           </div>
         </div>

@@ -9,8 +9,6 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
 
 export default async function UsersPage() {
   const users = await db
@@ -19,11 +17,32 @@ export default async function UsersPage() {
       name: UserSchema.name,
       email: UserSchema.email,
       role: UserSchema.role,
+      userRole: UserSchema.userRole,
+      entityId: UserSchema.entityId,
     })
     .from(UserSchema);
 
   const cities = await db.select().from(city);
   const networks = await db.select().from(networkManager);
+
+  const entityMap = new Map();
+
+  cities.forEach((city) => {
+    entityMap.set(city.id, { name: city.name, type: "city" });
+  });
+
+  networks.forEach((network) => {
+    entityMap.set(network.id, { name: network.name, type: "network" });
+  });
+
+  const enrichedUsers = users.map((user) => {
+    const entityInfo = user.entityId ? entityMap.get(user.entityId) : null;
+    return {
+      ...user,
+      entityName: entityInfo ? entityInfo.name : null,
+      entityType: entityInfo ? entityInfo.type : null,
+    };
+  });
 
   const data = [
     ...cities.map((city) => ({
@@ -60,7 +79,7 @@ export default async function UsersPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <UsersTable users={users} />
+          <UsersTable users={enrichedUsers} />
         </CardContent>
       </Card>
     </div>

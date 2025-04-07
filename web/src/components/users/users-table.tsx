@@ -29,6 +29,10 @@ interface TableUser {
   name: string;
   email: string;
   role: string | null;
+  userRole: string | null;
+  entityId: string | null;
+  entityName: string | null;
+  entityType: string | null;
 }
 
 export function UsersTable({ users }: { users: TableUser[] }) {
@@ -88,6 +92,8 @@ export function UsersTable({ users }: { users: TableUser[] }) {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>User Role</TableHead>
+              <TableHead>Entity</TableHead>
               <TableHead className="w-[100px] text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -108,6 +114,21 @@ export function UsersTable({ users }: { users: TableUser[] }) {
                     <Badge variant={getRoleBadgeVariant(user.role)}>
                       {user.role || "No role"}
                     </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="outline">
+                      {user.userRole || "No user role"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {user.entityName ? (
+                      <Badge variant="secondary">
+                        {user.entityType === "city" ? "City: " : "Network: "}
+                        {user.entityName}
+                      </Badge>
+                    ) : (
+                      <span className="text-muted-foreground">No entity</span>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     <Dialog
