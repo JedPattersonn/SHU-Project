@@ -1,6 +1,10 @@
 import { NextResponse, NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
+import NewUserEmail from "@/components/emails/new-user";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -33,6 +37,22 @@ export async function POST(request: NextRequest) {
         Authorization: `Bearer ${user.token}`,
       },
     });
+
+    const firstName = name.split(" ")[0];
+    const { error } = await resend.emails.send({
+      from: "no-reply@emails.jedpatterson.com",
+      to: email,
+      subject: "Your Smart Energy Dashboard account has been created",
+      react: NewUserEmail({
+        email,
+        password,
+        firstName,
+      }),
+    });
+
+    if (error) {
+      console.error("Error sending welcome email:", error);
+    }
 
     revalidatePath("/users");
 

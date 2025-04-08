@@ -1,55 +1,81 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart } from "recharts"
+import * as React from "react";
+import { Label, Pie, PieChart } from "recharts";
 
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+import { energyData } from "@/lib/db/schema";
 
-//hard coded data for the chart
-const chartData = [
-  { browser: "HasSmart", visitors: 275, fill: "var(--color-HasSmart)" },
-  { browser: "NoSmart", visitors: 200, fill: "var(--color-NoSmart)" },
- 
-]
+type EnergyData = typeof energyData.$inferSelect;
 
-//decides the colour and what the label says
 const chartConfig = {
   HasSmart: {
-    label: "Owns a Smart Meter",
-    color:"rgba(99, 101, 101, 0.75)",
+    label: "Has Smart Meter",
+    color: "rgb(0, 0, 0)",
   },
   NoSmart: {
-    label: "Doesnt Own a Smart Meter",
-    color:"rgb(0, 0, 0)",
+    label: "No Smart Meter",
+    color: "rgb(255, 255, 255)",
   },
-} satisfies ChartConfig
+} satisfies ChartConfig;
 
-//the math for the pie chart 
-export function SmartMeterChart() {
-  const totalVisitors = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
-  }, [])
+interface SmartMeterChartProps {
+  data: EnergyData[];
+  year: number;
+}
 
+export function SmartMeterChart({ data, year }: SmartMeterChartProps) {
+  const chartData = React.useMemo(() => {
+    let totalSmartMeters = 0;
+    let totalConnections = 0;
+
+    data.forEach((item) => {
+      if (item.smartmeterPerc && item.numConnections) {
+        const smartMeterCount = Math.round(
+          (item.smartmeterPerc / 100) * item.numConnections
+        );
+        totalSmartMeters += smartMeterCount;
+        totalConnections += item.numConnections;
+      }
+    });
+
+    const smartMeterPercentage =
+      totalConnections > 0
+        ? Math.round((totalSmartMeters / totalConnections) * 100)
+        : 0;
+    const noSmartMeterPercentage = 100 - smartMeterPercentage;
+
+    return [
+      {
+        browser: "HasSmart",
+        visitors: smartMeterPercentage,
+        fill: "var(--color-HasSmart)",
+      },
+      {
+        browser: "NoSmart",
+        visitors: noSmartMeterPercentage,
+        fill: "var(--color-NoSmart)",
+      },
+    ];
+  }, [data]);
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Donut with Text</CardTitle>
-        <CardDescription>Amount of Smart Meters</CardDescription>
+        <CardTitle>Smart Meter Distribution</CardTitle>
+        <CardDescription>Year: {year}</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
@@ -67,8 +93,8 @@ export function SmartMeterChart() {
               nameKey="browser"
               innerRadius={60}
               strokeWidth={5}
+              startAngle={0}
             >
-            {/*centers the label in the middle of the chart*/}
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
@@ -84,17 +110,19 @@ export function SmartMeterChart() {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          {totalVisitors.toLocaleString()}
+                          {chartData.find((item) => item.browser === "HasSmart")
+                            ?.visitors || 0}
+                          %
                         </tspan>
-                        <tspan
+                        {/* <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Smart Meters
-                        </tspan>
+                          Smart Meter Adoption
+                        </tspan> */}
                       </text>
-                    )
+                    );
                   }
                 }}
               />
@@ -103,5 +131,5 @@ export function SmartMeterChart() {
         </ChartContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { PlusCircle } from "lucide-react";
 
 export function NewUserDialog({
   data,
@@ -65,7 +66,7 @@ export function NewUserDialog({
         entityId: "",
         userRole: "",
       });
-    } catch (error) {
+    } catch {
       toast.error("Failed to create user");
     } finally {
       setLoading(false);
@@ -75,13 +76,18 @@ export function NewUserDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add User</Button>
+        <Button className="flex items-center gap-2">
+          <PlusCircle className="h-4 w-4" />
+          Add New User
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <form onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create User</DialogTitle>
-            <DialogDescription>Add a new user.</DialogDescription>
+            <DialogTitle>Create New User</DialogTitle>
+            <DialogDescription>
+              Add a new user to the system with appropriate permissions.
+            </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -96,6 +102,7 @@ export function NewUserDialog({
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
+                placeholder="Enter full name"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -111,6 +118,7 @@ export function NewUserDialog({
                   setFormData({ ...formData, email: e.target.value })
                 }
                 required
+                placeholder="Enter email address"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -126,6 +134,7 @@ export function NewUserDialog({
                   setFormData({ ...formData, password: e.target.value })
                 }
                 required
+                placeholder="Enter password"
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
