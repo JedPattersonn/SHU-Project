@@ -3,6 +3,7 @@ import { SmartMeterCard } from "@/components/history/smart-meter-card";
 import { ConnectionsCard } from "@/components/history/connections-card";
 import { EnergySummaryCard } from "@/components/history/energy-summary-card";
 import { EnergyTypeComparisonCard } from "@/components/history/energy-type-comparison-card";
+import { ExportButton } from "@/components/history/export-button";
 import type { Metadata } from "next";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -30,10 +31,17 @@ export default async function HistoryPage() {
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-bold tracking-tight">Energy History</h1>
-        <p className="text-muted-foreground">
-          Historical data and trends for energy consumption and connections
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Energy History
+            </h1>
+            <p className="text-muted-foreground">
+              Historical data and trends for energy consumption and connections
+            </p>
+          </div>
+          <ExportButton userRole={userRole} entityId={entityId} />
+        </div>
       </div>
 
       <EnergySummaryCard data={yearlyData} />

@@ -9,6 +9,12 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Users | Energy Dashboard",
+  description: "Manage and view all users in the system",
+};
 
 export default async function UsersPage() {
   const users = await db

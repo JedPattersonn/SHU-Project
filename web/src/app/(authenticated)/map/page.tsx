@@ -2,7 +2,7 @@ import React, { Suspense } from "react";
 import { Metadata } from "next";
 import { db } from "@/lib/db";
 import { energyData, city, networkManager } from "@/lib/db/schema";
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { enrichEnergyDataWithCoordinates } from "@/lib/utils/postal-code";
 import Loading from "./loading";
 import { auth } from "@/lib/auth";
