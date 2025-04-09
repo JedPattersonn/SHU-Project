@@ -1,9 +1,6 @@
 "use client";
 
-import { useState } from "react";
 import InteractiveHeatMap from "./interactive-map";
-import { MapSelection } from "./map-selection";
-import { fetchEnergyData } from "@/app/(authenticated)/map/actions";
 
 interface City {
   id: string;
@@ -22,28 +19,23 @@ interface MapContainerProps {
   isAdmin: boolean;
 }
 
-export function MapContainer({
-  initialData,
-  cities,
-  networks,
-  isAdmin,
-}: MapContainerProps) {
-  const [mapData, setMapData] = useState(initialData);
+export function MapContainer({ initialData }: MapContainerProps) {
+  // const [mapData, setMapData] = useState(initialData);
 
-  const handleSelectionChange = async (
-    selection: {
-      type: "city" | "network";
-      id: string;
-    } | null
-  ) => {
-    try {
-      const data = await fetchEnergyData(selection);
-      setMapData(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setMapData([]);
-    }
-  };
+  // const handleSelectionChange = async (
+  //   selection: {
+  //     type: "city" | "network";
+  //     id: string;
+  //   } | null
+  // ) => {
+  //   try {
+  //     const data = await fetchEnergyData(selection);
+  //     setMapData(data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //     setMapData([]);
+  //   }
+  // };
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -55,7 +47,7 @@ export function MapContainer({
         />
       )} */}
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <InteractiveHeatMap energyData={mapData} />
+        <InteractiveHeatMap energyData={initialData} />
       </div>
     </div>
   );
