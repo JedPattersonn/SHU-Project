@@ -5,10 +5,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { HighestConsumptionZipcodesCard } from "@/components/dashboard/highest-consumption-zipcodes";
 import { db } from "@/lib/db";
-import { energyData, city } from "@/lib/db/schema";
+import { energyData, city, user } from "@/lib/db/schema";
 import { eq, desc, max } from "drizzle-orm";
 import { SmartMeterChart } from "@/components/dashboard/smart-meter-chart";
 import { DeliveryPercentagePieChart } from "@/components/dashboard/delivery-percentage-chart";
+import { FirstLoginBanner } from "@/components/dashboard/first-login-banner";
 
 type EnergyData = typeof energyData.$inferSelect;
 
@@ -27,6 +28,14 @@ export default async function Home() {
 
   const userRole = session.user.userRole as "city" | "network";
   const entityId = session.user.entityId;
+  const userId = session.user.id;
+
+  const userData = await db
+    .select({ hasChangedPassword: user.hasChangedPassword })
+    .from(user)
+    .where(eq(user.id, userId));
+
+  const needsPasswordChange = !userData[0]?.hasChangedPassword;
 
   const cityData = await db
     .select({ name: city.name })
@@ -93,6 +102,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col gap-4">
+      {needsPasswordChange && <FirstLoginBanner />}
       <div className="mb-4">
         <h1 className="text-3xl font-bold">{cityName} Energy Dashboard</h1>
         <p className="text-muted-foreground">Data from {mostRecentYear}</p>

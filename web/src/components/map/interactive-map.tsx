@@ -5,7 +5,6 @@ import L from "leaflet";
 import "leaflet.heat";
 import "leaflet/dist/leaflet.css";
 import { EnergyDataWithCoordinates } from "@/lib/utils/postal-code";
-import { useRouter } from "next/navigation";
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -49,7 +48,6 @@ interface InteractiveHeatMapProps {
 const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({
   energyData,
 }) => {
-  const router = useRouter();
   const center = energyData[0]?.coordinates || [52.3567, 6.6626];
   const zoom = 13;
 
@@ -59,7 +57,6 @@ const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({
     item.annualConsume / 10000,
   ]);
 
-  const [selectedMarker, setSelectedMarker] = useState<number | null>(null);
   const [showMarkers, setShowMarkers] = useState(true);
 
   return (
@@ -91,14 +88,8 @@ const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({
           <HeatmapLayer points={heatPoints} />
 
           {showMarkers &&
-            energyData.map((item, index) => (
-              <Marker
-                key={item.id}
-                position={item.coordinates}
-                eventHandlers={{
-                  click: () => setSelectedMarker(index),
-                }}
-              >
+            energyData.map((item) => (
+              <Marker key={item.id} position={item.coordinates}>
                 <Popup>
                   <div className="min-w-[200px] font-sans">
                     <h3 className="text-lg font-semibold text-gray-800 border-b pb-2 mb-3">
@@ -144,30 +135,6 @@ const InteractiveHeatMap: React.FC<InteractiveHeatMapProps> = ({
                         </span>
                         <span className="text-gray-800">{item.year}</span>
                       </div>
-                    </div>
-                    <div className="mt-4 pt-3 border-t border-gray-200">
-                      <button
-                        onClick={() => {
-                          router.push(`/history/${item.zipCodeFrom}`);
-                        }}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center gap-2"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                        View History
-                      </button>
                     </div>
                   </div>
                 </Popup>

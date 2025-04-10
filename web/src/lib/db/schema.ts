@@ -21,6 +21,7 @@ export const user = mysqlTable("user", {
   banned: boolean("banned"),
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
+  hasChangedPassword: boolean("has_changed_password").default(false),
 
   // Custom Data
   entityId: text("entity_id"),
